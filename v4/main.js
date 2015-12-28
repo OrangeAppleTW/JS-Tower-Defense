@@ -12,8 +12,6 @@ var enemy = {
     speed:64,
     pathDes: 0,
     move: function(){
-        this.x += this.direction.x * this.speed/FPS;
-        this.y += this.direction.y * this.speed/FPS;
         if( isCollided(enemyPath[this.pathDes].x, enemyPath[this.pathDes].y, this.x, this.y, this.speed/FPS, this.speed/FPS) ){
 
             // 首先，移動到下一個路徑點
@@ -28,6 +26,11 @@ var enemy = {
             this.direction.x = unitVector.x;
             this.direction.y = unitVector.y;
 
+        } else {
+            // this.x += this.direction.x * this.speed/FPS;
+            this.x = this.x + this.direction.x * this.speed/FPS;
+            // this.y += this.direction.y * this.speed/FPS;
+            this.y = this.y + this.direction.y * this.speed/FPS;
         }
     }
 };
