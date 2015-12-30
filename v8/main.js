@@ -1,3 +1,5 @@
+var GAME_TICKER;
+
 var canvas = document.getElementById("game-canvas");
 var ctx = canvas.getContext("2d");
 
@@ -5,11 +7,20 @@ var FPS = 60;
 var clock = 0;
 var cursor = {};
 var isBuilding = false;
-var tower = {
-    range: 96,
-    fireRate: 1,
-    readyToShootTime: 1,
-    searchEnemy: function(){
+var towers = [];
+var enemies = [];
+var cannonBalls = [];
+var hp = 100;
+var score = 0;
+var money = 0;
+
+function Tower(x, y) {
+    this.x = x;
+    this.y = y;
+    this.range = 96;
+    this.fireRate = 1;
+    this.readyToShootTime = 1;
+    this.searchEnemy = function(){
         for(var i=0; i<enemies.length; i++){
             var distance = Math.sqrt( Math.pow(this.x-enemies[i].x,2) + Math.pow(this.y-enemies[i].y,2) );
             if (distance<=this.range) {
@@ -25,15 +36,12 @@ var tower = {
         }
         // 如果都沒找到，會進到這行，清除鎖定的目標
         this.aimingEnemyId = null;
-    },
-    shoot: function(){
+    };
+    this.shoot = function(){
         var newConnonball = new Connonball(this);
         cannonBalls.push(newConnonball);
-    }
+    };
 };
-var enemies = [];
-var cannonBalls = [];
-var hp = 100;
 
 function Enemy() { 
     this.x = 96; 
@@ -139,8 +147,7 @@ $("#game-canvas").click(function(){
             isBuilding = true;
         }
     } else if (isBuilding) {
-        tower.x = cursor.x - cursor.x%32;
-        tower.y = cursor.y - cursor.y%32;
+        towers.push( new Tower(cursor.x - cursor.x%32, cursor.y - cursor.y%32) );
     }
 });
 
@@ -156,17 +163,21 @@ function draw(){
     for(var i=0; i<enemies.length; i++){
         if (enemies[i].hp<=0) {
             enemies.splice(i,1);
+            money += 10;
+            score += 10;
         } else {
             enemies[i].move();
             ctx.drawImage( slimeImg, enemies[i].x, enemies[i].y);
         }
     }
 
-    tower.searchEnemy();
-    ctx.drawImage(towerImg, tower.x, tower.y);
-    if ( tower.aimingEnemyId!=null ) {
-        var id = tower.aimingEnemyId;
-        ctx.drawImage( crosshairImg, enemies[id].x, enemies[id].y );
+    for(var i=0; i<towers.length; i++){
+        towers[i].searchEnemy();
+        ctx.drawImage(towerImg, towers[i].x, towers[i].y);
+        if ( towers[i].aimingEnemyId!=null ) {
+            var id = towers[i].aimingEnemyId;
+            ctx.drawImage( crosshairImg, enemies[id].x, enemies[id].y );
+        }
     }
 
     for(var _i=0; _i<cannonBalls.length; _i++){
@@ -184,12 +195,16 @@ function draw(){
     }
 
     ctx.fillText("HP:"+hp, 16, 32);
+    ctx.fillText("Score:"+score+" Money:"+money, 16, 64);
+
+    if(hp<=0){
+        gameover();
+    }
 
     clock++;
 }
 
-setInterval(draw, 1000/FPS);
-
+GAME_TICKER = setInterval(draw, 1000/FPS);
 
 
 // ====== 其他函式 ====== //
@@ -216,4 +231,15 @@ function getUnitVector(srcX, srcY, targetX, targetY) {
         y: offsetY/distance
     };
     return unitVector;
+}
+
+function gameover(){
+    ctx.textAlign = "center";
+    ctx.font = "64px Arial";
+    ctx.fillText("GAME OVER", canvas.width/2, canvas.height/2-96);
+    ctx.font = "48px Arial";
+    ctx.fillText("you got", canvas.width/2, canvas.height/2-32);
+    ctx.font = "128px Arial";
+    ctx.fillText(score, canvas.width/2, canvas.height/2+96);
+    clearInterval(GAME_TICKER);
 }
