@@ -82,20 +82,12 @@ function Connonball(tower) {
     this.x = tower.x+16;
     this.y = tower.y;
     this.speed = 320;
-    this.damage = 20;
+    this.damage = 5;
     this.hitted = false;
     this.direction = getUnitVector(this.x, this.y, aimedEnemy.x, aimedEnemy.y);
     this.move = function(){
         this.x += this.direction.x*this.speed/FPS;
         this.y += this.direction.y*this.speed/FPS;
-        for(var _i=0; _i<enemies.length; _i++){
-            this.hitted =  isCollided(this.x, this.y, enemies[_i].x, enemies[_i].y, 32, 32 );
-            if (this.hitted) {
-                enemies[_i].hp -= this.damage;
-                // 如果不加這行會很慘喔！
-                break;
-            }
-        }
     };
 }
 
@@ -176,12 +168,7 @@ function draw(){
 
     for(var _i=0; _i<cannonBalls.length; _i++){
         cannonBalls[_i].move();
-
-        if (cannonBalls[_i].hitted) {
-            cannonBalls.splice(_i,1);
-        } else {
-            ctx.drawImage( cannonballImg, cannonBalls[_i].x, cannonBalls[_i].y );
-        }
+        ctx.drawImage( cannonballImg, cannonBalls[_i].x, cannonBalls[_i].y );
     }
     
     if(isBuilding){

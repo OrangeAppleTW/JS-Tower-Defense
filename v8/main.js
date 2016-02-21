@@ -12,7 +12,6 @@ var enemies = [];
 var cannonBalls = [];
 var hp = 100;
 var score = 0;
-var money = 0;
 
 function Tower(x, y) {
     this.x = x;
@@ -86,7 +85,7 @@ function Connonball(tower) {
     this.x = tower.x+16;
     this.y = tower.y;
     this.speed = 320;
-    this.damage = 20;
+    this.damage = 5;
     this.hitted = false;
     this.direction = getUnitVector(this.x, this.y, aimedEnemy.x, aimedEnemy.y);
     this.move = function(){
@@ -163,7 +162,6 @@ function draw(){
     for(var i=0; i<enemies.length; i++){
         if (enemies[i].hp<=0) {
             enemies.splice(i,1);
-            money += 10;
             score += 10;
         } else {
             enemies[i].move();
@@ -195,7 +193,7 @@ function draw(){
     }
 
     ctx.fillText("HP:"+hp, 16, 32);
-    ctx.fillText("Score:"+score+" Money:"+money, 16, 64);
+    ctx.fillText("Score:"+score, 16, 64);
 
     if(hp<=0){
         gameover();

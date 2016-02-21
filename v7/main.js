@@ -10,6 +10,10 @@ var tower = {
     fireRate: 1,
     readyToShootTime: 1,
     searchEnemy: function(){
+
+        // 減少距離下個射擊的冷卻時間
+        this.readyToShootTime -= 1/FPS
+        
         for(var i=0; i<enemies.length; i++){
             var distance = Math.sqrt( Math.pow(this.x-enemies[i].x,2) + Math.pow(this.y-enemies[i].y,2) );
             if (distance<=this.range) {
@@ -17,8 +21,6 @@ var tower = {
                 if(this.readyToShootTime<=0){
                     this.shoot();
                     this.readyToShootTime = this.fireRate;
-                } else {
-                    this.readyToShootTime -= 1/FPS
                 }
                 return;
             }
@@ -78,20 +80,12 @@ function Connonball(tower) {
     this.x = tower.x+16;
     this.y = tower.y;
     this.speed = 320;
-    this.damage = 20;
+    this.damage = 5;
     this.hitted = false;
     this.direction = getUnitVector(this.x, this.y, aimedEnemy.x, aimedEnemy.y);
     this.move = function(){
         this.x += this.direction.x*this.speed/FPS;
         this.y += this.direction.y*this.speed/FPS;
-        for(var _i=0; _i<enemies.length; _i++){
-            this.hitted =  isCollided(this.x, this.y, enemies[_i].x, enemies[_i].y, 32, 32 );
-            if (this.hitted) {
-                enemies[_i].hp -= this.damage;
-                // 如果不加這行會很慘喔！
-                break;
-            }
-        }
     };
 }
 
@@ -171,12 +165,7 @@ function draw(){
 
     for(var _i=0; _i<cannonBalls.length; _i++){
         cannonBalls[_i].move();
-
-        if (cannonBalls[_i].hitted) {
-            cannonBalls.splice(_i,1);
-        } else {
-            ctx.drawImage( cannonballImg, cannonBalls[_i].x, cannonBalls[_i].y );
-        }
+        ctx.drawImage( cannonballImg, cannonBalls[_i].x, cannonBalls[_i].y );
     }
     
     if(isBuilding){
