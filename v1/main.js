@@ -3,17 +3,17 @@ var ctx = canvas.getContext("2d");
 
 var bgImg = document.createElement("img");
 bgImg.src = "images/map.png";
-var heroImg = document.createElement("img");
-heroImg.src = "images/jason.gif";
+var enemyImg = document.createElement("img");
+enemyImg.src = "images/slime.gif";
 
-var hero = {
+var enemy = {
   x: 0,
   y: 0
 };
 
 function draw(){
   ctx.drawImage(bgImg,0,0);
-  ctx.drawImage(heroImg, hero.x, hero.y);
+  ctx.drawImage(enemyImg, enemy.x, enemy.y);
 }
 
 // setTimeout(draw,1000);
