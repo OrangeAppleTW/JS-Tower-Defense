@@ -5,16 +5,14 @@ var FPS = 60;
 var cursor = {};
 var isBuilding = false;
 var tower = {};
-var enemy = { 
-    x:96, 
+var enemy = {
+    x:96,
     y:480-32,
-    direction:{x:0,y:-1},
-    speed:64,
+    speedX:0,
+    speedY:-64,
     move: function(){
-        // this.x += this.direction.x * this.speed/FPS;
-        this.x = this.x + this.direction.x * this.speed/FPS;
-        // this.y += this.direction.y * this.speed/FPS;
-        this.y = this.y + this.direction.y * this.speed/FPS;
+        this.x = this.x + this.speedX/FPS;
+        this.y = this.y + this.speedY/FPS;
     }
 };
 
