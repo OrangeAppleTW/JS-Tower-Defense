@@ -5,14 +5,14 @@ var FPS = 60;
 var cursor = {};
 var isBuilding = false;
 var tower = {};
-var enemy = { 
-    x:96, 
+var enemy = {
+    x:96,
     y:480-32,
-    direction:{x:0,y:-1},
-    speed:64,
+    speedX:0,
+    speedY:-64,
     pathDes: 0,
     move: function(){
-        if( isCollided(enemyPath[this.pathDes].x, enemyPath[this.pathDes].y, this.x, this.y, this.speed/FPS, this.speed/FPS) ){
+        if( isCollided(enemyPath[this.pathDes].x, enemyPath[this.pathDes].y, this.x, this.y, 64/FPS, 64/FPS) ){
 
             // 首先，修正位置到目標路徑點
             this.x = enemyPath[this.pathDes].x;
@@ -21,16 +21,26 @@ var enemy = {
             // 指定下一個路徑點為目標路徑點
             this.pathDes++;
 
-            // 設定前往目標路徑點的單位向量
-            var unitVector = getUnitVector( this.x, this.y, enemyPath[this.pathDes].x, enemyPath[this.pathDes].y );
-            this.direction.x = unitVector.x;
-            this.direction.y = unitVector.y;
+            // 重新設定設定前往目標路徑點的所需的水平/垂直速度
+            if (enemyPath[this.pathDes].x>this.x) {
+              this.speedX = 64;
+              this.speedY = 0;
+            } else if (enemyPath[this.pathDes].x<this.x) {
+              this.speedX = -64;
+              this.speedY = 0;
+            } else if (enemyPath[this.pathDes].y>this.y) {
+              this.speedX = 0;
+              this.speedY = 64;
+            } else if (enemyPath[this.pathDes].y<this.y) {
+              this.speedX = 0;
+              this.speedY = -64;
+            }
 
         } else {
             // this.x += this.direction.x * this.speed/FPS;
-            this.x = this.x + this.direction.x * this.speed/FPS;
+            this.x = this.x + this.speedX/FPS;
             // this.y += this.direction.y * this.speed/FPS;
-            this.y = this.y + this.direction.y * this.speed/FPS;
+            this.y = this.y + this.speedY/FPS;
         }
     }
 };
@@ -105,16 +115,4 @@ function isCollided(pointX, pointY, targetX, targetY, targetWidth, targetHeight)
     } else {
         return false;
     }
-}
-
-function getUnitVector(srcX, srcY, targetX, targetY) {
-    var offsetX = targetX - srcX;
-    var offsetY = targetY - srcY;
-    var distance = Math.sqrt( Math.pow(offsetX,2) + Math.pow(offsetY,2) );
-
-    var unitVector = {
-        x: offsetX/distance,
-        y: offsetY/distance
-    };
-    return unitVector;
 }
