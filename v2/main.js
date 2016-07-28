@@ -4,10 +4,16 @@ var ctx = canvas.getContext("2d");
 var FPS = 60;
 var cursor = {};
 var isBuilding = false;
+var enemy = {
+  x: 96,
+  y: 480-32
+};
 
 // ====== 引入圖檔 ====== //
 var bgImg = document.createElement("img");
 bgImg.src = "images/map.png";
+var slimeImg = document.createElement("img");
+slimeImg.src = "images/slime.gif";
 var buttonImg = document.createElement("img");
 buttonImg.src = "images/tower-btn.png";
 var towerImg = document.createElement("img");
@@ -37,6 +43,7 @@ function draw(){
     if(isBuilding){
         ctx.drawImage(towerImg, cursor.x, cursor.y);
     }
+    ctx.drawImage(slimeImg, enemy.x, enemy.y);
 }
 
 setInterval(draw, 1000/FPS);
