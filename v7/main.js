@@ -13,7 +13,7 @@ var tower = {
 
         // 減少距離下個射擊的冷卻時間
         this.readyToShootTime -= 1/FPS
-        
+
         for(var i=0; i<enemies.length; i++){
             var distance = Math.sqrt( Math.pow(this.x-enemies[i].x,2) + Math.pow(this.y-enemies[i].y,2) );
             if (distance<=this.range) {
@@ -37,15 +37,15 @@ var enemies = [];
 var cannonBalls = [];
 var hp = 100;
 
-function Enemy() { 
-    this.x = 96; 
+function Enemy() {
+    this.x = 96;
     this.y = 480-32;
     this.hp = 10;
-    this.direction = {x:0,y:-1};
-    this.speed = 64;
+    this.speedX = 0;
+    this.speedY = -64;
     this.pathDes = 0;
     this.move = function(){
-        if( isCollided(enemyPath[this.pathDes].x, enemyPath[this.pathDes].y, this.x, this.y, this.speed/FPS, this.speed/FPS) ){
+        if( isCollided(enemyPath[this.pathDes].x, enemyPath[this.pathDes].y, this.x, this.y, 64/FPS, 64/FPS) ){
 
             if (this.pathDes === enemyPath.length-1) {
                 this.hp=0;
@@ -58,17 +58,25 @@ function Enemy() {
                 // 指定下一個路徑點
                 this.pathDes++;
 
-                // 取得前往下一個路徑點的單位向量
-                var unitVector = getUnitVector( this.x, this.y, enemyPath[this.pathDes].x, enemyPath[this.pathDes].y );
-                this.direction.x = unitVector.x;
-                this.direction.y = unitVector.y;
+                // 重新設定設定前往目標路徑點的所需的水平/垂直速度
+                if (enemyPath[this.pathDes].x>this.x) {
+                  this.speedX = 64;
+                  this.speedY = 0;
+                } else if (enemyPath[this.pathDes].x<this.x) {
+                  this.speedX = -64;
+                  this.speedY = 0;
+                } else if (enemyPath[this.pathDes].y>this.y) {
+                  this.speedX = 0;
+                  this.speedY = 64;
+                } else if (enemyPath[this.pathDes].y<this.y) {
+                  this.speedX = 0;
+                  this.speedY = -64;
+                }
             }
 
         } else {
-            // this.x += this.direction.x * this.speed/FPS;
-            this.x = this.x + this.direction.x * this.speed/FPS;
-            // this.y += this.direction.y * this.speed/FPS;
-            this.y = this.y + this.direction.y * this.speed/FPS;
+            this.x = this.x + this.speedX/FPS;
+            this.y = this.y + this.speedY/FPS;
         }
     };
 }
@@ -167,7 +175,7 @@ function draw(){
         cannonBalls[_i].move();
         ctx.drawImage( cannonballImg, cannonBalls[_i].x, cannonBalls[_i].y );
     }
-    
+
     if(isBuilding){
         ctx.drawImage(towerImg, cursor.x, cursor.y);
     }

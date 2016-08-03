@@ -37,9 +37,7 @@ var enemy = {
             }
 
         } else {
-            // this.x += this.direction.x * this.speed/FPS;
             this.x = this.x + this.speedX/FPS;
-            // this.y += this.direction.y * this.speed/FPS;
             this.y = this.y + this.speedY/FPS;
         }
     }
