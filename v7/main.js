@@ -29,12 +29,16 @@ var tower = {
         this.aimingEnemyId = null;
     },
     shoot: function(){
-        var newConnonball = new Connonball(this);
-        cannonBalls.push(newConnonball);
+        ctx.beginPath();
+        ctx.moveTo(this.x+16,this.y);
+        ctx.lineTo(enemies[this.aimingEnemyId].x+16,enemies[this.aimingEnemyId].y+16);
+        ctx.strokeStyle = 'red';
+        ctx.lineWidth = 3;
+        ctx.stroke();
+        enemies[this.aimingEnemyId].hp -= 5;
     }
 };
 var enemies = [];
-var cannonBalls = [];
 var hp = 100;
 
 function Enemy() {
@@ -81,22 +85,6 @@ function Enemy() {
     };
 }
 
-function Connonball(tower) {
-
-    var aimedEnemy = enemies[tower.aimingEnemyId];
-
-    this.x = tower.x+16;
-    this.y = tower.y;
-    this.speed = 320;
-    this.damage = 5;
-    this.hitted = false;
-    this.direction = getUnitVector(this.x, this.y, aimedEnemy.x, aimedEnemy.y);
-    this.move = function(){
-        this.x += this.direction.x*this.speed/FPS;
-        this.y += this.direction.y*this.speed/FPS;
-    };
-}
-
 
 var enemyPath = [
     {x:96, y:64},
@@ -119,8 +107,6 @@ var slimeImg = document.createElement("img");
 slimeImg.src = "images/slime.gif";
 var crosshairImg = document.createElement("img");
 crosshairImg.src = "images/crosshair.png";
-var cannonballImg = document.createElement("img");
-cannonballImg.src = "images/cannon-ball.png";
 // ==================== //
 
 ctx.font = "24px Arial";
@@ -171,11 +157,6 @@ function draw(){
         ctx.drawImage( crosshairImg, enemies[id].x, enemies[id].y );
     }
 
-    for(var _i=0; _i<cannonBalls.length; _i++){
-        cannonBalls[_i].move();
-        ctx.drawImage( cannonballImg, cannonBalls[_i].x, cannonBalls[_i].y );
-    }
-
     if(isBuilding){
         ctx.drawImage(towerImg, cursor.x, cursor.y);
     }
@@ -201,16 +182,4 @@ function isCollided(pointX, pointY, targetX, targetY, targetWidth, targetHeight)
     } else {
         return false;
     }
-}
-
-function getUnitVector(srcX, srcY, targetX, targetY) {
-    var offsetX = targetX - srcX;
-    var offsetY = targetY - srcY;
-    var distance = Math.sqrt( Math.pow(offsetX,2) + Math.pow(offsetY,2) );
-
-    var unitVector = {
-        x: offsetX/distance,
-        y: offsetY/distance
-    };
-    return unitVector;
 }
