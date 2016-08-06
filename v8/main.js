@@ -11,6 +11,7 @@ var towers = [];
 var enemies = [];
 var hp = 100;
 var score = 0;
+var money = 25;
 
 function Tower(x, y) {
     this.x = x;
@@ -54,7 +55,7 @@ function Enemy() {
     this.speedY = -64;
     this.pathDes = 0;
     this.move = function(){
-        if( isCollided(enemyPath[this.pathDes].x, enemyPath[this.pathDes].y, this.x, this.y, this.speed/FPS, this.speed/FPS) ){
+        if( isCollided(enemyPath[this.pathDes].x, enemyPath[this.pathDes].y, this.x, this.y, 64/FPS, 64/FPS) ){
 
             if (this.pathDes === enemyPath.length-1) {
                 this.hp=0;
@@ -130,7 +131,8 @@ $("#game-canvas").click(function(){
         } else {
             isBuilding = true;
         }
-    } else if (isBuilding) {
+    } else if (isBuilding && money>=25) {
+        money = money - 25;
         towers.push( new Tower(cursor.x - cursor.x%32, cursor.y - cursor.y%32) );
     }
 });
@@ -148,6 +150,7 @@ function draw(){
         if (enemies[i].hp<=0) {
             enemies.splice(i,1);
             score += 10;
+            money += 8;
         } else {
             enemies[i].move();
             ctx.drawImage( slimeImg, enemies[i].x, enemies[i].y);
@@ -169,6 +172,7 @@ function draw(){
 
     ctx.fillText("HP:"+hp, 16, 32);
     ctx.fillText("Score:"+score, 16, 64);
+    ctx.fillText("Money:"+money, 16, 96);
 
     if(hp<=0){
         gameover();

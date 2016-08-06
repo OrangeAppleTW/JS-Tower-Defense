@@ -45,10 +45,10 @@ function Tower(x, y) {
     };
 };
 
-function Enemy(level) {
+function Enemy() {
     this.x = 96;
     this.y = 480-32;
-    this.hp = 10*Math.pow(level,1.2); // 等級越高，HP越高
+    this.hp = 10;
     this.speedX = 0;
     this.speedY = -64;
     this.pathDes = 0;
@@ -115,7 +115,7 @@ crosshairImg.src = "images/crosshair.png";
 ctx.font = "24px Arial";
 ctx.fillStyle = "white";
 
-$("#game-canvas").mousemove(function(event) {
+$("#game-canvas").on("mousemove", function(event) {
     cursor = {
         x: event.offsetX,
         y: event.offsetY
@@ -138,8 +138,7 @@ $("#game-canvas").click(function(){
 function draw(){
 
     if(clock%80==0){
-        var enemyLevel = Math.floor(clock/800)+1;
-        enemies.push(new Enemy(enemyLevel));
+        enemies.push(new Enemy());
     }
 
     ctx.drawImage(bgImg,0,0);
@@ -166,7 +165,7 @@ function draw(){
     }
 
     if(isBuilding){
-        ctx.drawImage(towerImg, cursor.x - cursor.x%32, cursor.y - cursor.y%32);
+        ctx.drawImage(towerImg, cursor.x, cursor.y);
     }
 
     ctx.fillText("HP:"+hp, 16, 32);
