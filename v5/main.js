@@ -68,14 +68,14 @@ var slimeImg = document.createElement("img");
 slimeImg.src = "images/slime.gif";
 // ==================== //
 
-$("#game-canvas").mousemove(function(event) {
+$("#game-canvas").on("mousemove", function(event) {
     cursor = {
         x: event.offsetX,
         y: event.offsetY
     };
 });
 
-$("#game-canvas").click(function(){
+$("#game-canvas").on("click", function(){
     if( isCollided(cursor.x, cursor.y, 640-64, 480-64, 64, 64) ){
         if (isBuilding) {
             isBuilding = false;

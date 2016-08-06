@@ -122,7 +122,7 @@ $("#game-canvas").on("mousemove", function(event) {
     };
 });
 
-$("#game-canvas").click(function(){
+$("#game-canvas").on("click", function(){
     if( isCollided(cursor.x, cursor.y, 640-64, 480-64, 64, 64) ){
         if (isBuilding) {
             isBuilding = false;
